@@ -45,7 +45,7 @@
 
 
                     <Label Grid.Row="2" Grid.Column="0" Text="Adress" FontSize="18" TextColor="White"/>
-                    <Label Grid.Row="2" Grid.Column="1" Text="Tanta" FontSize="18" TextColor="White"/>
+                    <Label Grid.Row="2" Grid.Column="1" Text="Shebin ElKom" FontSize="18" TextColor="White"/>
 
                         <Button Text="LogOut" Grid.Row="3" Grid.Column="0" Clicked="myLogout"/>
                         <Button Text="RegisterAgain" Grid.Row="3" Grid.Column="1" Clicked="registeragain"/>
