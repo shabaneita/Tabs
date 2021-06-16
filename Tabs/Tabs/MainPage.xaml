@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:Tabs"
+             x:Class="Tabs.MainPage">
+
+    <Shell.FlyoutHeaderTemplate>
+        <DataTemplate>
+            <Grid BackgroundColor="Green">
+                <Image Source="images.png" Opacity="0.6"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.FlyoutHeaderTemplate>
+    <FlyoutItem Title="TabOne" Icon="home.png">
+        <ShellContent>
+            <pages:Page1/>
+        </ShellContent>
+    </FlyoutItem>
+    <FlyoutItem Title="TabTwo" Icon="loc.png">
+        <ShellContent>
+            <pages:Page2/>
+        </ShellContent>
+    </FlyoutItem>
+    <FlyoutItem Title="TabThree" Icon="mes.png">
+        <ShellContent>
+            <pages:Page3/>
+        </ShellContent>
+    </FlyoutItem>
+</Shell>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Tabs.LogIn" Title="LogIn">
+    <ContentPage.Content>
+        <StackLayout>
+            <Image x:Name="myimage" WidthRequest="100" HeightRequest="100"/>
+            <Entry Placeholder="User Name" HeightRequest="90" x:Name="UNEntry"/>
+            <Entry Placeholder="Password" HeightRequest="90" x:Name="PassEntry"/>
+            <Button Text="LogIn" Clicked="mylogin"/>
+            <Button Text="Cancle" Clicked="mycancle"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
