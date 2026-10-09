@@ -413,6 +413,21 @@ d("privacy & authorization (RLS)", () => {
     });
   });
 
+  describe("accounts created before the schema", () => {
+    it("ensure_my_profile recreates only the caller's missing rows, idempotently", async () => {
+      await pool.query("delete from public.user_settings where user_id = $1", [stranger.id]);
+      await pool.query("delete from public.profiles where id = $1", [stranger.id]);
+      expect(await q(stranger, "select id from public.profiles where id = $1", [stranger.id])).toHaveLength(0);
+
+      await q(stranger, "select public.ensure_my_profile()");
+      await q(stranger, "select public.ensure_my_profile()");
+      expect(await one(stranger, "select display_name from public.profiles where id = $1", [stranger.id])).toEqual({ display_name: "stranger" });
+      expect(await q(stranger, "select user_id from public.user_settings where user_id = $1", [stranger.id])).toHaveLength(1);
+
+      await expectError(q(null, "select public.ensure_my_profile()"), /permission denied/);
+    });
+  });
+
   describe("receipt storage", () => {
     it("only allows uploads under a transaction the user can write, and reads via attachment rows", async () => {
       const priv = (
