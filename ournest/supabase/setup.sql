@@ -1685,30 +1685,28 @@ create policy "receipts_delete_writable" on storage.objects for delete to authen
 
 -- >>> 20261009000600_backfill_profiles.sql
 -- =====================================================================
--- OurNest Finance (بيتنا) — Repair accounts created before the schema.
---
--- handle_new_user() only fires for sign-ups that happen after the
--- trigger exists. Accounts that already existed in auth.users when the
--- tables were created have no profiles / user_settings rows, and the
--- app fails to load ("تعذّر تحميل البيانات").
---
--- This file is idempotent: it is safe to paste on its own into the SQL
--- Editor of an existing project, and safe to run again.
+-- Backfill profile + settings rows for accounts created before the
+-- schema existed (e.g. signing up right after deployment, before
+-- setup.sql was run). Idempotent: safe to run any number of times.
 -- =====================================================================
-
--- ---------------------------------------------------------------------
--- One-off backfill for every existing account.
--- ---------------------------------------------------------------------
 insert into public.profiles (id, display_name)
-select
-  u.id,
-  left(coalesce(nullif(trim(u.raw_user_meta_data ->> 'display_name'), ''), split_part(u.email, '@', 1), ''), 60)
+select u.id,
+       left(coalesce(nullif(trim(u.raw_user_meta_data ->> 'display_name'), ''), split_part(u.email, '@', 1), ''), 60)
 from auth.users u
 on conflict (id) do nothing;
 
 insert into public.user_settings (user_id)
 select u.id from auth.users u
 on conflict (user_id) do nothing;
+
+-- >>> 20261009000700_ensure_my_profile.sql
+-- =====================================================================
+-- OurNest Finance (بيتنا) — Self-heal missing profile/settings rows.
+--
+-- Complements 20261009000600_backfill_profiles.sql: if an account still
+-- has no profiles / user_settings row at login, the app calls this RPC
+-- instead of failing with "تعذّر تحميل البيانات". Idempotent.
+-- =====================================================================
 
 -- ---------------------------------------------------------------------
 -- Self-heal on login: creates the caller's missing rows, if any.

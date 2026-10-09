@@ -140,7 +140,7 @@ Latest local results:
 
    > Created the database through Vercel's **Supabase integration**? It sets `NEXT_PUBLIC_SUPABASE_URL` and the anon/publishable key for you (both names are supported). You still need to run `supabase/setup.sql` once, then do steps 3–5 below.
 
-   > Already ran an older `setup.sql`? Don't re-run the whole file. Paste just **`supabase/migrations/20261009000600_backfill_profiles.sql`** and press **Run**: it creates the missing profile/settings rows for accounts that signed up before the tables existed (the "تعذّر تحميل البيانات" error) and is safe to run more than once.
+   > Already ran an older `setup.sql`? Don't re-run the whole file. Paste just **`supabase/migrations/20261009000600_backfill_profiles.sql`** and **`20261009000700_ensure_my_profile.sql`** and press **Run**: they create the missing profile/settings rows for accounts that signed up before the tables existed (the "تعذّر تحميل البيانات" error) and is safe to run more than once.
 3. **Authentication → Providers → Email:** enable email sign-up, keep *Confirm email* on, set *minimum password length* to **8**.
 4. **Authentication → URL configuration:**
    - Site URL: `https://<your-domain>`
