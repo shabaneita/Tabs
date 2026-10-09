@@ -2,7 +2,7 @@
 
 import { Plus } from "lucide-react";
 import { motion } from "motion/react";
-import { Amount, Num } from "@/components/ui/amount";
+import { Amount, Num, Pct } from "@/components/ui/amount";
 import { ProgressRing, toneForPct } from "@/components/ui/progress";
 import { useQuickAdd } from "@/components/expense/quick-add";
 import type { BudgetSummary } from "@/lib/finance/budget";
@@ -37,8 +37,7 @@ export function HeroCard({ summary }: { summary: BudgetSummary }) {
         >
           <div>
             <p className="text-2xl font-bold leading-none">
-              <Num value={summary.consumedPct} />
-              <span className="text-base">٪</span>
+              <Pct value={summary.consumedPct} />
             </p>
             <p className="mt-1 text-[11px] opacity-75">مستهلك</p>
           </div>
@@ -61,7 +60,7 @@ export function HeroCard({ summary }: { summary: BudgetSummary }) {
           <span className="block h-full rounded-full bg-white/70" style={{ width: `${summary.elapsedPct}%` }} />
         </span>
         <span>
-          مضى <Num value={summary.elapsedPct} />٪ من الشهر
+          مضى <Pct value={summary.elapsedPct} /> من الشهر
         </span>
       </div>
 

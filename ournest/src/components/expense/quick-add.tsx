@@ -281,7 +281,48 @@ function ExpenseSheet({
         onOpenChange={onOpenChange}
         title={title}
         description={isEdit && ownerName ? `أضافه ${ownerName}` : undefined}
+        pinned={<>
+        {/* Visibility */}
+        <div className="mb-1">
+          <Segmented<Visibility>
+            size="sm"
+            ariaLabel="لمن هذا المصروف"
+            value={visibility}
+            onChange={(v) => (isMine && !preset?.lockVisibility ? setVisibility(v) : null)}
+            options={[
+              { value: "shared", label: "مصروف البيت", icon: <Users className="size-4" /> },
+              { value: "private", label: "خاص بي", icon: <Lock className="size-4" /> },
+            ]}
+          />
+          <p className="mt-1 truncate px-1 text-[11px] text-foreground-subtle">
+            {!isMine
+              ? "صاحب المصروف فقط يمكنه تغيير الخصوصية."
+              : visibility === "shared"
+                ? "يظهر لشريكك ويُحسب في ميزانية البيت."
+                : "يظهر لك وحدك ولا يدخل في ميزانية البيت."}
+          </p>
+        </div>
+
+        {/* Amount display */}
+        <div className="flex items-center justify-center py-1" aria-live="polite">
+          <button
+            type="button"
+            onClick={() => setAmount("")}
+            className="flex items-baseline gap-2"
+            aria-label="المبلغ — اضغط للمسح"
+            data-testid="amount-display"
+          >
+            <span className={cn("num text-[44px] font-bold leading-tight tracking-tight", !amount && "text-foreground-subtle")}>
+              {amount ? localizeDigits(amount, numerals).replace(".", numerals === "arab" ? "٫" : ".") : localizeDigits("0", numerals)}
+            </span>
+            <span className="text-lg font-medium text-foreground-muted">د.إ</span>
+          </button>
+        </div>
+
+        </>}
         footer={
+          <>
+          <Keypad onKey={onKey} className="mb-2" />
           <div className="flex gap-2">
             {isEdit ? (
               <Button variant="danger-soft" size="lg" className="w-14 px-0" aria-label="حذف المصروف" onClick={() => setConfirmDelete(true)}>
@@ -293,47 +334,12 @@ function ExpenseSheet({
               {amountMinor ? <Amount minor={amountMinor} className="opacity-90" /> : null}
             </Button>
           </div>
+          </>
         }
       >
-        {/* Visibility */}
-        <div className="mb-3">
-          <Segmented<Visibility>
-            ariaLabel="لمن هذا المصروف"
-            value={visibility}
-            onChange={(v) => (isMine && !preset?.lockVisibility ? setVisibility(v) : null)}
-            options={[
-              { value: "shared", label: "مصروف البيت", icon: <Users className="size-4" /> },
-              { value: "private", label: "خاص بي", icon: <Lock className="size-4" /> },
-            ]}
-          />
-          <p className="mt-1.5 px-1 text-xs text-foreground-subtle">
-            {!isMine
-              ? "صاحب المصروف فقط يمكنه تغيير الخصوصية."
-              : visibility === "shared"
-                ? "يظهر لشريكك ويُحسب في ميزانية البيت."
-                : "يظهر لك وحدك ولا يدخل في ميزانية البيت."}
-          </p>
-        </div>
-
-        {/* Amount display */}
-        <div className="flex items-center justify-center py-2" aria-live="polite">
-          <button
-            type="button"
-            onClick={() => setAmount("")}
-            className="flex items-baseline gap-2"
-            aria-label="المبلغ — اضغط للمسح"
-            data-testid="amount-display"
-          >
-            <span className={cn("num text-5xl font-bold tracking-tight", !amount && "text-foreground-subtle")}>
-              {amount ? localizeDigits(amount, numerals).replace(".", numerals === "arab" ? "٫" : ".") : localizeDigits("0", numerals)}
-            </span>
-            <span className="text-lg font-medium text-foreground-muted">د.إ</span>
-          </button>
-        </div>
-
         {/* Categories */}
         <div className="-mx-5 mb-3 mt-1">
-          <div className="no-scrollbar grid auto-cols-[76px] grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-5 pb-1" role="radiogroup" aria-label="التصنيف">
+          <div className="no-scrollbar grid auto-cols-[84px] grid-flow-col grid-rows-2 gap-2 overflow-x-auto px-5 pb-1" role="radiogroup" aria-label="التصنيف">
             {ordered.map((c) => (
               <CategoryChip key={c.id} category={c} selected={c.id === categoryId} onSelect={() => setCategoryId(c.id)} />
             ))}
@@ -447,8 +453,6 @@ function ExpenseSheet({
             تفاصيل إضافية <ChevronDown className="size-3.5" />
           </button>
         ) : null}
-
-        <Keypad onKey={onKey} />
       </Sheet>
 
       <ConfirmDialog
@@ -488,11 +492,11 @@ function CategoryChip({ category, selected, onSelect }: { category: Category; se
         onSelect();
       }}
       className={cn(
-        "pressable flex h-[72px] flex-col items-center justify-center gap-1 rounded-2xl border px-1 text-center transition-colors",
+        "pressable flex h-[64px] flex-col items-center justify-center gap-1 rounded-2xl border px-1 text-center transition-colors",
         selected ? "border-primary bg-primary-soft" : "border-transparent bg-muted",
       )}
     >
-      <CategoryIcon icon={category.icon} color={category.color} size={30} className="rounded-xl" />
+      <CategoryIcon icon={category.icon} color={category.color} size={28} className="rounded-xl" />
       <span className="line-clamp-1 w-full text-[11px] font-medium leading-tight">{category.name}</span>
     </button>
   );

@@ -10,7 +10,8 @@ import type { Visibility } from "../types";
 export type BudgetTx = { amount_minor: number; category_id: string; occurred_on: ISODate; visibility: Visibility };
 export type BudgetLine = { category_id: string; planned_minor: number };
 
-export type CategoryStatus = "ok" | "near" | "over" | "unplanned" | "idle";
+/** "full" = exactly on plan (typical for fixed costs like rent) — not a warning. */
+export type CategoryStatus = "ok" | "near" | "full" | "over" | "unplanned" | "idle";
 
 export interface CategoryBudget {
   categoryId: string;
@@ -42,6 +43,7 @@ export const NEAR_THRESHOLD_PCT = 80;
 export function categoryStatus(planned: number, actual: number): CategoryStatus {
   if (planned <= 0) return actual > 0 ? "unplanned" : "idle";
   if (actual > planned) return "over";
+  if (actual === planned) return "full";
   if (percentOf(actual, planned) >= NEAR_THRESHOLD_PCT) return "near";
   return "ok";
 }

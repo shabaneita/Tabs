@@ -48,7 +48,8 @@ describe("household budget", () => {
   it("classifies statuses at the boundaries", () => {
     expect(categoryStatus(100, 79)).toBe("ok");
     expect(categoryStatus(100, 80)).toBe("near");
-    expect(categoryStatus(100, 100)).toBe("near");
+    expect(categoryStatus(100, 99)).toBe("near");
+    expect(categoryStatus(100, 100)).toBe("full");
     expect(categoryStatus(100, 101)).toBe("over");
     expect(categoryStatus(0, 0)).toBe("idle");
   });

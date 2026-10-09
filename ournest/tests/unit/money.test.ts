@@ -46,6 +46,13 @@ describe("formatting", () => {
     expect(formatAED(82500)).toBe("825 د.إ");
   });
 
+  it("uses consistent compact notation for chart axes", () => {
+    const norm = (v: string) => v.replace(/\s/g, " ");
+    expect(norm(formatMinor(900000, { compact: true }))).toBe("9 آلاف");
+    expect(norm(formatMinor(1200000, { compact: true }))).toBe("12 ألف");
+    expect(formatMinor(50000, { compact: true })).toBe("500");
+  });
+
   it("round-trips input strings", () => {
     expect(minorToInput(125050)).toBe("1250.50");
     expect(minorToInput(8000)).toBe("80");

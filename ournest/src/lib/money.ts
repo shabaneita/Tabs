@@ -84,7 +84,7 @@ export function formatMinor(minor: number, opts: FormatMoneyOptions = {}): strin
   // Integer math for the whole part; fraction appended separately to avoid float drift.
   const whole = Math.floor(abs / 100);
   let body: string;
-  if (compact && abs >= 1_000_000) {
+  if (compact && abs >= 100_000) {
     body = nf(numerals, 0, true).format(abs / 100);
   } else if (showFils) {
     const fracDigits = String(abs % 100).padStart(2, "0");

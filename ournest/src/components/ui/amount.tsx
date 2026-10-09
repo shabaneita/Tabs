@@ -33,3 +33,9 @@ export function Num({ value, className }: { value: number; className?: string })
   const numerals = useNumerals();
   return <span className={cn("num", className)}>{new Intl.NumberFormat(`ar-AE-u-nu-${numerals}`).format(value)}</span>;
 }
+
+/** Percentage as one isolated LTR run ("29٪") so the sign never detaches. */
+export function Pct({ value, className }: { value: number; className?: string }) {
+  const numerals = useNumerals();
+  return <span className={cn("num", className)}>{new Intl.NumberFormat(`ar-AE-u-nu-${numerals}`).format(Math.round(value))}٪</span>;
+}

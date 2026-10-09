@@ -12,7 +12,7 @@ const KEYS: KeypadKey[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0"
 export function Keypad({ onKey, className }: { onKey: (k: KeypadKey) => void; className?: string }) {
   const numerals = useNumerals();
   return (
-    <div dir="ltr" className={cn("grid grid-cols-3 gap-2", className)}>
+    <div dir="ltr" className={cn("grid grid-cols-3 gap-1.5", className)}>
       {KEYS.map((k) => (
         <button
           key={k}
@@ -28,7 +28,7 @@ export function Keypad({ onKey, className }: { onKey: (k: KeypadKey) => void; cl
             }
           }}
           aria-label={k === "back" ? "حذف" : k === "." ? "فاصلة عشرية" : k}
-          className="pressable grid h-[52px] place-items-center rounded-2xl bg-muted text-[22px] font-semibold text-foreground active:bg-sage-strong"
+          className="pressable grid h-[46px] place-items-center rounded-2xl bg-muted text-[22px] font-semibold text-foreground active:bg-sage-strong"
         >
           {k === "back" ? <Delete className="size-6" strokeWidth={1.8} /> : k === "." ? (numerals === "arab" ? "٫" : ".") : localizeDigits(k, numerals)}
         </button>

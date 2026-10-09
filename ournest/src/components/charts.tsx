@@ -1,7 +1,7 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { Amount, Num, useNumerals } from "@/components/ui/amount";
+import { Amount, Num, useNumerals, Pct } from "@/components/ui/amount";
 import { formatMinor, percentOf } from "@/lib/money";
 import type { Category } from "@/lib/types";
 
@@ -50,7 +50,7 @@ export function CategoryDonut({ data, total }: { data: Datum[]; total: number })
             <span className="size-3 shrink-0 rounded-[4px]" style={{ background: d.color }} aria-hidden />
             <span className="min-w-0 flex-1 truncate">{d.name}</span>
             <span className="text-foreground-subtle">
-              <Num value={percentOf(d.value, total)} />٪
+              <Pct value={percentOf(d.value, total)} />
             </span>
             <Amount minor={d.value} className="w-24 justify-end font-semibold" />
           </li>
@@ -67,7 +67,7 @@ function DatumTooltip({ active, payload, total }: { active?: boolean; payload?: 
     <div dir="rtl" className="rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-card">
       <p className="font-semibold">{d.name}</p>
       <p className="mt-0.5 text-foreground-muted">
-        <Amount minor={d.value} className="font-semibold text-foreground" /> · <Num value={percentOf(d.value, total)} />٪
+        <Amount minor={d.value} className="font-semibold text-foreground" /> · <Pct value={percentOf(d.value, total)} />
       </p>
     </div>
   );

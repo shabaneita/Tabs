@@ -1,6 +1,6 @@
 "use client";
 
-import { Amount, Num } from "@/components/ui/amount";
+import { Amount, Num, Pct } from "@/components/ui/amount";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { ProgressBar } from "@/components/ui/progress";
 import type { CategoryBudget } from "@/lib/finance/budget";
@@ -25,7 +25,7 @@ export function CategorySpendingRow({ line, category, onClick }: { line: Categor
             ) : null}
           </span>
         </div>
-        <ProgressBar value={line.plannedMinor > 0 ? line.pct : line.actualMinor > 0 ? 100 : 0} className="mt-2" height={6} tone={line.status === "unplanned" ? "info" : undefined} />
+        <ProgressBar value={line.plannedMinor > 0 ? line.pct : line.actualMinor > 0 ? 100 : 0} className="mt-2" height={6} tone={line.status === "unplanned" ? "info" : line.status === "full" ? "primary" : undefined} />
         <div className="mt-1.5 flex justify-between text-xs">
           <span className={cn(over ? "text-danger" : line.status === "near" ? "text-warning" : "text-foreground-subtle")}>
             {line.status === "unplanned"
@@ -36,7 +36,7 @@ export function CategorySpendingRow({ line, category, onClick }: { line: Categor
           </span>
           {line.plannedMinor > 0 ? (
             <span className="text-foreground-subtle">
-              <Num value={line.pct} />٪
+              <Pct value={line.pct} />
             </span>
           ) : null}
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Lock } from "lucide-react";
-import { Amount, Num, useNumerals } from "@/components/ui/amount";
+import { Amount, Num, useNumerals, Pct } from "@/components/ui/amount";
 import { CategoryIcon } from "@/components/ui/category-icon";
 import { ProgressRing } from "@/components/ui/progress";
 import { formatDate } from "@/lib/dates";
@@ -18,7 +18,7 @@ export function GoalMiniCard({ goal, onClick }: { goal: GoalWithContributions & 
         <CategoryIcon icon={meta.icon} color={meta.color} size={36} />
         <ProgressRing value={goal.progress.pct} size={44} stroke={5}>
           <span className="text-[11px] font-semibold">
-            <Num value={goal.progress.pct} />٪
+            <Pct value={goal.progress.pct} />
           </span>
         </ProgressRing>
       </div>
