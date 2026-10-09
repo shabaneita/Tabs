@@ -1,26 +1,292 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+:root,
+.force-light {
+  color-scheme: light;
+  --background: #f7f4ec;          /* warm ivory */
+  --card: #ffffff;                /* pure white elevated cards */
+  --card-raised: #ffffff;
+  --sage: #e8efe7;                /* soft sage secondary surfaces */
+  --sage-strong: #d6e3d4;
+  --muted: #f0ece2;
+  --foreground: #1d2420;          /* charcoal */
+  --foreground-muted: #5f6a64;
+  --foreground-subtle: #87918b;
+  --border: #e7e1d5;
+  --border-strong: #d6cfbf;
+  --primary: #0d6a4d;             /* deep emerald */
+  --primary-strong: #09553d;
+  --primary-soft: #dcefe5;
+  --primary-foreground: #ffffff;
+  --danger: #b42318;
+  --danger-soft: #fdebe8;
+  --warning: #9a5b00;
+  --warning-soft: #fff1d6;
+  --info: #1d5aa0;
+  --info-soft: #e5effa;
+  --ring: rgb(13 106 77 / 0.35);
+  --overlay: rgb(20 24 22 / 0.38);
+  --shadow-card: 0 1px 2px rgb(29 36 32 / 0.04), 0 6px 20px -8px rgb(29 36 32 / 0.08);
+  --shadow-float: 0 10px 30px -10px rgb(13 106 77 / 0.55), 0 2px 6px rgb(29 36 32 / 0.12);
+  --shadow-sheet: 0 -12px 40px -12px rgb(29 36 32 / 0.18);
+  --hero-from: #0d6a4d;
+  --hero-to: #0a4f3a;
+  --hero-foreground: #f6f3ea;
+
+  /* Category palette: fill (chips/charts) + ink (icons/text) */
+  --cat-emerald: #1f8a64;  --cat-emerald-soft: #ddf0e6;
+  --cat-sky: #2f74b5;      --cat-sky-soft: #e2eef9;
+  --cat-sand: #b07a1f;     --cat-sand-soft: #f7ecd6;
+  --cat-sage: #5f7f62;     --cat-sage-soft: #e6eee4;
+  --cat-violet: #6d5bb8;   --cat-violet-soft: #ece8f8;
+  --cat-rose: #b4475c;     --cat-rose-soft: #f8e4e8;
+
+  /* Chart categorical slots (validated with the dataviz validator, fixed order) */
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
+  --series-5: #e87ba4; --series-6: #008300; --series-7: #4a3aa7; --series-8: #e34948;
+  --series-other: #a3a29b;
+  --chart-grid: #ebe6db;
+  --chart-axis: #898781;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-height: 64px;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0b1114;          /* deep charcoal / midnight navy */
+  --card: #131b1f;
+  --card-raised: #182227;
+  --sage: #142019;
+  --sage-strong: #1b2c23;
+  --muted: #172025;
+  --foreground: #f1efe8;          /* off-white */
+  --foreground-muted: #a3ada8;
+  --foreground-subtle: #76817c;
+  --border: #222d32;
+  --border-strong: #2d3a40;
+  --primary: #44c896;             /* soft emerald */
+  --primary-strong: #63d6aa;
+  --primary-soft: #143529;
+  --primary-foreground: #04221a;
+  --danger: #f0796c;
+  --danger-soft: #3a1c19;
+  --warning: #eeb24f;
+  --warning-soft: #33270f;
+  --info: #84b6ef;
+  --info-soft: #15263a;
+  --ring: rgb(68 200 150 / 0.4);
+  --overlay: rgb(0 0 0 / 0.55);
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.02) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-float: 0 10px 30px -10px rgb(68 200 150 / 0.45), 0 2px 6px rgb(0 0 0 / 0.4);
+  --shadow-sheet: 0 -12px 40px -12px rgb(0 0 0 / 0.7);
+  --hero-from: #123d30;
+  --hero-to: #0d2a22;
+  --hero-foreground: #eef6f1;
+
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+  --series-5: #d55181; --series-6: #008300; --series-7: #9085e9; --series-8: #e66767;
+  --series-other: #5f6460;
+  --chart-grid: #222d32;
+  --chart-axis: #898781;
+
+  --cat-emerald: #55cf9f;  --cat-emerald-soft: #15322a;
+  --cat-sky: #7db3ec;      --cat-sky-soft: #15283b;
+  --cat-sand: #e4b45f;     --cat-sand-soft: #33280f;
+  --cat-sage: #9dbb9f;     --cat-sage-soft: #1b281e;
+  --cat-violet: #ab9cf0;   --cat-violet-soft: #241f3d;
+  --cat-rose: #ef8fa1;     --cat-rose-soft: #3a1c23;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-card: var(--card);
+  --color-card-raised: var(--card-raised);
+  --color-sage: var(--sage);
+  --color-sage-strong: var(--sage-strong);
+  --color-muted: var(--muted);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-hero-foreground: var(--hero-foreground);
+
+  --font-sans: "IBM Plex Sans Arabic", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.75rem;
+
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
+  --shadow-sheet: var(--shadow-sheet);
+
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    background: var(--background);
+    overflow-x: hidden;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern";
+    line-height: 1.55;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.35s var(--ease-ios), color 0.35s var(--ease-ios);
+  }
+
+  *, ::before, ::after {
+    border-color: var(--border);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 10px;
+  }
+
+  /* iOS zooms into inputs under 16px; keep form text at 16px+. */
+  input, select, textarea {
+    font-size: 16px;
+  }
+
+  input[type="date"] {
+    min-height: 2.75rem;
+  }
+
+  ::selection {
+    background: var(--primary-soft);
+  }
+
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Numbers: tabular, LTR-isolated so they never reorder inside Arabic text. */
+  .num {
+    font-variant-numeric: tabular-nums lining-nums;
+    unicode-bidi: isolate;
+    direction: ltr;
+    display: inline-block;
+  }
+
+  .ltr-isolate {
+    unicode-bidi: isolate;
+    direction: ltr;
+  }
+
+  .pt-safe {
+    padding-top: var(--safe-top);
+  }
+
+  .pb-safe {
+    padding-bottom: var(--safe-bottom);
+  }
+
+  .pb-nav {
+    padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 6rem);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .surface-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .hero-gradient {
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgb(255 255 255 / 0.10), transparent 55%),
+      linear-gradient(160deg, var(--hero-from), var(--hero-to));
+  }
+
+  .pressable {
+    transition: transform 0.15s var(--ease-ios), background-color 0.2s, opacity 0.2s;
+  }
+  .pressable:active {
+    transform: scale(0.97);
+  }
+
+  .shimmer {
+    background: linear-gradient(90deg, var(--muted) 0%, var(--sage) 50%, var(--muted) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Drawer (vaul) overlay */
+[data-vaul-overlay] {
+  background: var(--overlay);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Print (PDF report)                                                  */
+/* ------------------------------------------------------------------ */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+  html, body {
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
 }

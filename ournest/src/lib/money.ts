@@ -86,7 +86,7 @@ export function formatMinor(minor: number, opts: FormatMoneyOptions = {}): strin
   let body: string;
   if (compact && abs >= 1_000_000) {
     body = nf(numerals, 0, true).format(abs / 100);
-  } else if (showFils && fils !== "never") {
+  } else if (showFils) {
     const fracDigits = String(abs % 100).padStart(2, "0");
     const decimal = numerals === "arab" ? "٫" : ".";
     body = nf(numerals, 0).format(whole) + decimal + localizeDigits(fracDigits, numerals);

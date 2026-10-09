@@ -117,13 +117,16 @@ const UNITS = {
   month: { one: "شهر", two: "شهرين", few: "أشهر", many: "شهرًا" },
   installment: { one: "قسط", two: "قسطين", few: "أقساط", many: "قسطًا" },
   bill: { one: "فاتورة", two: "فاتورتين", few: "فواتير", many: "فاتورة" },
+  goal: { one: "هدف", two: "هدفين", few: "أهداف", many: "هدفًا" },
+  transaction: { one: "عملية", two: "عمليتين", few: "عمليات", many: "عملية" },
 } as const;
 
 /** Correct Arabic counting: يوم واحد، يومين، ٣ أيام، ١١ يومًا، ١٠٠ يوم. */
 export function arabicCount(n: number, unit: keyof typeof UNITS, numerals: Numerals = "latn"): string {
   const u = UNITS[unit];
   const num = new Intl.NumberFormat(`ar-AE-u-nu-${numerals}`).format(n);
-  if (n === 1) return `${u.one} واحد${unit === "bill" ? "ة" : ""}`;
+  if (n === 0) return `${num} ${u.many}`;
+  if (n === 1) return `${u.one} ${unit === "bill" || unit === "transaction" ? "واحدة" : "واحد"}`;
   if (n === 2) return u.two;
   const mod100 = n % 100;
   if (mod100 >= 3 && mod100 <= 10) return `${num} ${u.few}`;
