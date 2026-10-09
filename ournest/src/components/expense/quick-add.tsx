@@ -23,7 +23,7 @@ import { localizeDigits, minorToInput, parseAmountToMinor } from "@/lib/money";
 import { deleteReceipt, receiptUrl, uploadReceipt } from "@/lib/receipts";
 import { getSupabase } from "@/lib/supabase/client";
 import type { Category, PaymentMethod, Transaction, Visibility } from "@/lib/types";
-import { cn, haptic } from "@/lib/utils";
+import { cn, haptic, uuid } from "@/lib/utils";
 import { transactionSchema } from "@/lib/validation";
 
 export interface QuickAddPreset {
@@ -115,7 +115,7 @@ function ExpenseSheet({
   const [saving, setSaving] = useState(false);
   const [confirmDuplicate, setConfirmDuplicate] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [requestId] = useState(() => crypto.randomUUID());
+  const [requestId] = useState(() => uuid());
   const fileRef = useRef<HTMLInputElement>(null);
 
   const amountMinor = parseAmountToMinor(amount || "0");

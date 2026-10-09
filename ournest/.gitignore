@@ -45,3 +45,7 @@ next-env.d.ts
 /.local-stack/
 /test-results/
 /playwright-report/
+
+# supabase CLI local state
+supabase/.branches/
+supabase/.temp/

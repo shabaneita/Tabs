@@ -6,8 +6,6 @@ An Arabic-only, RTL-first personal and household finance PWA for a married coupl
 - **Currency and time:** AED, stored as integer fils (no floating point). Dubai civil dates.
 - **Privacy:** enforced by PostgreSQL Row Level Security, not by hiding UI. A spouse's private records never reach the other spouse's browser.
 
-> The repository root also contains an older, unrelated Xamarin project (`Tabs/`). OurNest lives entirely in this `ournest/` folder.
-
 ---
 
 ## What's included

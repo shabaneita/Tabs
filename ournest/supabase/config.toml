@@ -26,6 +26,6 @@ enable_signup = true
 
 [auth.email]
 enable_signup = true
-enable_confirmations = true
+enable_confirmations = false
 double_confirm_changes = true
 secure_password_change = true

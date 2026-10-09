@@ -1,6 +1,7 @@
 "use client";
 
 import { getSupabase } from "./supabase/client";
+import { uuid } from "./utils";
 
 export const RECEIPT_MAX_BYTES = 10 * 1024 * 1024;
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", "application/pdf"];
@@ -29,7 +30,7 @@ export async function uploadReceipt(householdId: string, transactionId: string, 
   if (!ALLOWED.includes(mime)) throw new Error("unsupported_receipt_type");
   if (body.size > RECEIPT_MAX_BYTES) throw new Error("receipt_too_large");
   const ext = mime === "application/pdf" ? "pdf" : mime.split("/")[1].replace("jpeg", "jpg");
-  const path = `${householdId}/${transactionId}/${crypto.randomUUID()}.${ext}`;
+  const path = `${householdId}/${transactionId}/${uuid()}.${ext}`;
   const up = await sb.storage.from("receipts").upload(path, body, { contentType: mime, upsert: false });
   if (up.error) throw up.error;
   const ins = await sb.from("receipt_attachments").insert({ transaction_id: transactionId, storage_path: path, mime_type: mime, size_bytes: body.size });

@@ -1,4 +1,11 @@
+import { networkInterfaces } from "node:os";
 import type { NextConfig } from "next";
+
+// Let phones on the same Wi-Fi open the dev server via this PC's LAN address.
+const lanHosts = Object.values(networkInterfaces())
+  .flat()
+  .filter((i) => i && i.family === "IPv4" && !i.internal)
+  .map((i) => i!.address);
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -9,6 +16,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  allowedDevOrigins: lanHosts,
   reactStrictMode: true,
   turbopack: {
     rules: {
