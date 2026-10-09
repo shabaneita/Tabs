@@ -136,7 +136,9 @@ Latest local results:
    supabase link --project-ref <ref>
    supabase db push           # runs everything in supabase/migrations
    ```
-   (Or paste each file in `supabase/migrations/` in order into the SQL editor.)
+   Or, easiest: open **SQL Editor → New query**, paste the whole of **`supabase/setup.sql`** (all migrations in one file) and press **Run** once.
+
+   > Created the database through Vercel's **Supabase integration**? It sets `NEXT_PUBLIC_SUPABASE_URL` and the anon/publishable key for you (both names are supported). You still need to run `supabase/setup.sql` once, then do steps 3–5 below.
 3. **Authentication → Providers → Email:** enable email sign-up, keep *Confirm email* on, set *minimum password length* to **8**.
 4. **Authentication → URL configuration:**
    - Site URL: `https://<your-domain>`
