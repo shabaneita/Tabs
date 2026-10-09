@@ -67,7 +67,7 @@ export default function InstallmentsPage() {
             <Amount minor={sharedCommitment} className="text-[28px] font-bold" />
             {allocation > 0 ? (
               <>
-                <ProgressBar value={percentOf(sharedCommitment, allocation)} tone="info" className="mt-3" />
+                <ProgressBar label="نسبة الأقساط من ميزانية الشهر" value={percentOf(sharedCommitment, allocation)} tone="info" className="mt-3" />
                 <p className="mt-2 text-xs text-foreground-muted">
                   <Pct value={percentOf(sharedCommitment, allocation)} /> من ميزانية الشهر (<Amount minor={allocation} />)
                 </p>
@@ -106,7 +106,7 @@ export default function InstallmentsPage() {
                     <Amount minor={p.monthly_amount_minor} className="font-semibold" />
                   )}
                 </div>
-                <ProgressBar value={p.summary.progressPct} tone="primary" className="mt-3" height={6} />
+                <ProgressBar label={`نسبة سداد ${p.name}`} value={p.summary.progressPct} tone="primary" className="mt-3" height={6} />
                 <div className="mt-2 flex justify-between text-xs text-foreground-muted">
                   <span>
                     متبقي <Amount minor={p.summary.outstandingMinor} className="font-semibold text-foreground" />

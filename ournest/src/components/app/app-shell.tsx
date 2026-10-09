@@ -66,6 +66,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function QuickAddFab() {
   const { open } = useQuickAdd();
+  const router = useRouter();
+  // Home-screen shortcut (manifest) opens the entry sheet directly: /?add=1
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("add") === "1") {
+      router.replace(window.location.pathname);
+      open();
+    }
+  }, [open, router]);
   return (
     <motion.button
       type="button"

@@ -250,7 +250,7 @@ export default function AnalyticsPage() {
                       <span>{r.name}</span>
                       <Amount minor={r.value} className="font-semibold" />
                     </div>
-                    <ProgressBar value={(r.value / Math.max(1, recurringTotal)) * 100} tone="info" height={6} />
+                    <ProgressBar label={r.name} value={(r.value / Math.max(1, recurringTotal)) * 100} tone="info" height={6} />
                   </div>
                 ))}
                 <p className="text-xs text-foreground-subtle">الفواتير غير الشهرية محسوبة كمتوسط شهري.</p>
@@ -273,7 +273,7 @@ export default function AnalyticsPage() {
                         <Amount minor={g.progress.currentMinor} className="font-semibold text-foreground" /> / <Amount minor={g.target_minor} hideCurrency />
                       </span>
                     </div>
-                    <ProgressBar value={g.progress.pct} tone="primary" height={6} />
+                    <ProgressBar label={`تقدم ${g.name}`} value={g.progress.pct} tone="primary" height={6} />
                   </div>
                 ))}
               </div>

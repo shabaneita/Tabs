@@ -67,7 +67,7 @@ export function ProgressRing({
   );
 }
 
-export function ProgressBar({ value, tone, className, height = 8 }: { value: number; tone?: Tone; className?: string; height?: number }) {
+export function ProgressBar({ value, tone, className, height = 8, label = "نسبة التقدم" }: { value: number; tone?: Tone; className?: string; height?: number; label?: string }) {
   const reduce = useReducedMotion();
   const t = tone ?? toneForPct(value);
   return (
@@ -75,6 +75,7 @@ export function ProgressBar({ value, tone, className, height = 8 }: { value: num
       className={cn("w-full overflow-hidden rounded-full bg-muted", className)}
       style={{ height }}
       role="progressbar"
+      aria-label={label}
       aria-valuenow={Math.round(value)}
       aria-valuemin={0}
       aria-valuemax={100}

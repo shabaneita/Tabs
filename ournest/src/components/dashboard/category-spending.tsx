@@ -25,7 +25,7 @@ export function CategorySpendingRow({ line, category, onClick }: { line: Categor
             ) : null}
           </span>
         </div>
-        <ProgressBar value={line.plannedMinor > 0 ? line.pct : line.actualMinor > 0 ? 100 : 0} className="mt-2" height={6} tone={line.status === "unplanned" ? "info" : line.status === "full" ? "primary" : undefined} />
+        <ProgressBar label={`استهلاك ميزانية ${category?.name ?? "التصنيف"}`} value={line.plannedMinor > 0 ? line.pct : line.actualMinor > 0 ? 100 : 0} className="mt-2" height={6} tone={line.status === "unplanned" ? "info" : line.status === "full" ? "primary" : undefined} />
         <div className="mt-1.5 flex justify-between text-xs">
           <span className={cn(over ? "text-danger" : line.status === "near" ? "text-warning" : "text-foreground-subtle")}>
             {line.status === "unplanned"

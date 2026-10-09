@@ -15,8 +15,8 @@
   --sage-strong: #d6e3d4;
   --muted: #f0ece2;
   --foreground: #1d2420;          /* charcoal */
-  --foreground-muted: #5f6a64;
-  --foreground-subtle: #87918b;
+  --foreground-muted: #4f5954;
+  --foreground-subtle: #626b66;
   --border: #e7e1d5;
   --border-strong: #d6cfbf;
   --primary: #0d6a4d;             /* deep emerald */
@@ -68,7 +68,7 @@
   --muted: #172025;
   --foreground: #f1efe8;          /* off-white */
   --foreground-muted: #a3ada8;
-  --foreground-subtle: #76817c;
+  --foreground-subtle: #8a948f;
   --border: #222d32;
   --border-strong: #2d3a40;
   --primary: #44c896;             /* soft emerald */
