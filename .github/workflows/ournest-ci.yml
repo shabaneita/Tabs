@@ -1,0 +1,41 @@
+name: OurNest CI
+
+on:
+  push:
+    paths: ["ournest/**", ".github/workflows/ournest-ci.yml"]
+  pull_request:
+    paths: ["ournest/**", ".github/workflows/ournest-ci.yml"]
+
+defaults:
+  run:
+    working-directory: ournest
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ournest/package-lock.json
+      - name: Install PostgreSQL 16 server
+        run: sudo apt-get update && sudo apt-get install -y postgresql-16
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Start local Supabase-compatible stack (Postgres + Auth + PostgREST)
+        run: ./scripts/local-stack/start.sh
+      - name: Unit + database privacy tests
+        run: |
+          set -a; source .local-stack/env; set +a
+          npm test
+      - name: Build
+        run: |
+          set -a; source .local-stack/env; set +a
+          npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: End-to-end tests (iPhone viewport)
+        run: |
+          set -a; source .local-stack/env; set +a
+          npm run test:e2e
