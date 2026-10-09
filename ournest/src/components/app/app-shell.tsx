@@ -12,21 +12,22 @@ import { haptic } from "@/lib/utils";
 import { AlertSync } from "./alert-sync";
 import { AppContext, useDubaiToday, type AppState } from "./app-context";
 import { BottomNav } from "./bottom-nav";
+import { LoadError } from "./load-error";
 import { Splash } from "./splash";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { data: me, isLoading, isError } = useMeQuery();
+  const { data: me, isLoading, isError, error } = useMeQuery();
   const today = useDubaiToday();
   const { setTheme } = useTheme();
   const themeSynced = useRef(false);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || isError) return;
     if (!me) router.replace(`/login?next=${encodeURIComponent(pathname)}`);
     else if (!me.household) router.replace("/onboarding");
-  }, [me, isLoading, router, pathname]);
+  }, [me, isLoading, isError, router, pathname]);
 
   // Apply the user's saved theme once per session (remembered per user).
   useEffect(() => {
@@ -41,7 +42,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     [me, today],
   );
 
-  if (isError) return <Splash message="تعذّر تحميل البيانات. تأكد من الاتصال ثم أعد المحاولة." />;
+  if (isError) return <LoadError error={error} />;
   if (!state) return <Splash />;
 
   const printOnly = pathname.startsWith("/report");

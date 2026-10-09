@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Wordmark } from "@/components/brand";
 import { InviteShare } from "@/components/invite-share";
+import { LoadError } from "@/components/app/load-error";
 import { Splash } from "@/components/app/splash";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/input";
@@ -20,7 +21,7 @@ type Step = "welcome" | "create" | "join" | "invite";
 export default function OnboardingPage() {
   const router = useRouter();
   const qc = useQueryClient();
-  const { data: me, isLoading } = useMeQuery();
+  const { data: me, isLoading, isError, error } = useMeQuery();
   const [step, setStep] = useState<Step>("welcome");
   const [name, setName] = useState("بيتنا");
   const [email, setEmail] = useState("");
@@ -29,11 +30,12 @@ export default function OnboardingPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || isError) return;
     if (!me) router.replace("/login");
     else if (me.household && step === "welcome") router.replace("/");
-  }, [me, isLoading, router, step]);
+  }, [me, isLoading, isError, router, step]);
 
+  if (isError) return <LoadError error={error} />;
   if (isLoading || !me) return <Splash />;
 
   async function createHousehold() {
