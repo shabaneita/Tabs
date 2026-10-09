@@ -76,6 +76,132 @@ These rules are verified by **`tests/db/privacy.test.ts`**, 33 tests that run re
 
 ---
 
+## Setup guide: Windows, Supabase and Vercel / دليل التشغيل والنشر
+
+This section covers the real setup for this repo: a Windows PC, one Supabase project and the Vercel project **`tabs-lt1p`** (https://tabs-lt1p.vercel.app). The sections further down hold the full reference.
+
+القسم ده بيشرح التشغيل الفعلي للمشروع ده: جهاز Windows، ومشروع Supabase واحد، ومشروع Vercel اسمه **`tabs-lt1p`** (https://tabs-lt1p.vercel.app). التفاصيل الكاملة في الأقسام اللي تحت.
+
+### 1. Clone / تنزيل الكود
+
+Install [Git for Windows](https://git-scm.com/download/win) and [Node.js 22 LTS](https://nodejs.org/), then in **PowerShell**:
+
+نزّل Git for Windows و Node.js 22 LTS، وبعدين افتح **PowerShell** واكتب:
+
+```powershell
+cd C:\Users\<you>\source\repos
+git clone https://github.com/shabaneita/Tabs.git
+cd Tabs\ournest
+npm install
+```
+
+The app lives in the `ournest\` folder. The `Tabs\` folder and `Tabs.sln` are an old Xamarin project and are not used.
+
+التطبيق كله جوه فولدر `ournest\`. فولدر `Tabs\` وملف `Tabs.sln` مشروع Xamarin قديم ومش مستخدم.
+
+### 2. Environment variables / متغيرات البيئة
+
+The app needs exactly two values. Find them in Supabase under **Project Settings → API** (or **Connect**).
+
+التطبيق محتاج قيمتين بس. هتلاقيهم في Supabase في **Project Settings → API** (أو زرار **Connect**).
+
+| Variable / المتغير | Value / القيمة |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://<ref>.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | the **anon** or **publishable** key (`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` also works) / مفتاح **anon** أو **publishable** |
+
+```powershell
+Copy-Item .env.example .env.local
+notepad .env.local
+```
+
+- Never put the **service_role** / **secret** key in `.env.local` or in Vercel. The app doesn't use it, and with a `NEXT_PUBLIC_` prefix it would be sent to every browser.
+- `.env.local` is git-ignored. Don't commit it.
+
+- متحطش مفتاح **service_role** أو **secret** في `.env.local` ولا في Vercel أبداً. التطبيق مش محتاجه، ولو اتكتب بـ `NEXT_PUBLIC_` هيوصل لأي متصفح.
+- ملف `.env.local` متجاهَل في git، متعملهوش commit.
+
+### 3. Run locally on Windows / التشغيل على Windows
+
+```powershell
+npm run dev
+```
+
+Open http://localhost:3000. Without the two variables you get the "التطبيق يحتاج إعدادًا" (setup required) page instead of a crash.
+
+افتح http://localhost:3000. لو المتغيرين مش موجودين هتظهر صفحة "التطبيق يحتاج إعدادًا" بدل ما التطبيق يقع.
+
+Notes for Windows / ملاحظات لـ Windows:
+
+- `npm run stack:start` and the other `scripts/local-stack/*.sh` scripts are Bash scripts. They run on Linux/macOS or inside **WSL**, not in plain PowerShell. On Windows the simplest path is to point `.env.local` at a Supabase project in the cloud.
+- **Use a separate Supabase project for development** (the free tier is enough). If `.env.local` points at the same project as Vercel, everything you create locally is real production data.
+- For sign-up emails to come back to your PC, add `http://localhost:3000/auth/confirm` and `http://localhost:3000/auth/callback` under **Authentication → URL Configuration → Redirect URLs** of the dev project.
+- Optional, Supabase CLI with Docker Desktop: `npx supabase start`, then copy the printed API URL and anon key into `.env.local`.
+
+- أوامر `npm run stack:start` وسكريبتات `scripts/local-stack/*.sh` مكتوبة بـ Bash، بتشتغل على Linux/macOS أو جوه **WSL**، مش في PowerShell العادي. على Windows الأسهل إنك توجّه `.env.local` لمشروع Supabase على السحابة.
+- **استخدم مشروع Supabase منفصل للتجربة** (الخطة المجانية كفاية). لو `.env.local` بيشاور على نفس مشروع Vercel، أي حاجة تعملها محلياً هتبقى بيانات حقيقية.
+- علشان إيميلات التسجيل ترجعلك على جهازك، ضيف `http://localhost:3000/auth/confirm` و `http://localhost:3000/auth/callback` في **Authentication → URL Configuration → Redirect URLs** في مشروع التجربة.
+- اختياري، لو عندك Docker Desktop: `npx supabase start` وانسخ الـ API URL والـ anon key اللي بيطبعهم في `.env.local`.
+
+### 4. Run `supabase/setup.sql` safely / تشغيل `setup.sql` بأمان
+
+`supabase/setup.sql` creates every table, policy and function in one go. It is meant to run **once on an empty project** and is **not re-runnable**: on a project that already has the tables it stops with an `already exists` error.
+
+ملف `supabase/setup.sql` بيعمل كل الجداول والصلاحيات والدوال مرة واحدة. معمول علشان يتشغّل **مرة واحدة بس على مشروع فاضي**، و**مينفعش يتعاد**: لو الجداول موجودة هيقف بخطأ `already exists`.
+
+1. **Check first / اتأكد الأول.** In **SQL Editor → New query**, run:
+   ```sql
+   select to_regclass('public.profiles') as already_installed;
+   ```
+   - `null` → empty project, continue. / المشروع فاضي، كمّل.
+   - `profiles` → already installed. **Do not run `setup.sql` again.** / متركبّ قبل كده، **متشغّلش `setup.sql` تاني.**
+2. **Run it / شغّله.** New query → paste the **whole** file → **Run** once. It should end with `Success. No rows returned`.
+   افتح query جديدة، الصق **الملف كله**، واضغط **Run** مرة واحدة. المفروض يخلص بـ `Success. No rows returned`.
+3. **Accounts created before the tables / حسابات اتعملت قبل الجداول.** The `profiles` and `user_settings` rows are created by a trigger when a user signs up. Anyone who signed up *before* `setup.sql` ran has no rows and sees "تعذّر تحميل البيانات". Fix them once (safe to re-run):
+   صف `profiles` و `user_settings` بيتعمل تلقائياً وقت التسجيل. أي حد سجّل *قبل* تشغيل `setup.sql` ملوش صفوف وهيشوف "تعذّر تحميل البيانات". الحل مرة واحدة (آمن لو اتعاد):
+   ```sql
+   insert into public.profiles (id, display_name)
+   select id, left(coalesce(nullif(trim(raw_user_meta_data ->> 'display_name'), ''), split_part(email, '@', 1), ''), 60)
+   from auth.users
+   on conflict (id) do nothing;
+
+   insert into public.user_settings (user_id)
+   select id from auth.users
+   on conflict (user_id) do nothing;
+   ```
+4. **Later schema changes / تعديلات بعد كده.** Don't re-run `setup.sql` on a live database. Apply only the new file from `supabase/migrations/`, or use `npx supabase link --project-ref <ref>` then `npx supabase db push`. Take a backup first (**Database → Backups**).
+   متشغّلش `setup.sql` تاني على قاعدة شغالة. شغّل الملف الجديد بس من `supabase/migrations/`، أو استخدم `npx supabase db push`. خد نسخة احتياطية الأول من **Database → Backups**.
+
+### 5. Deploy to Vercel (`tabs-lt1p`) / النشر على Vercel
+
+1. In Vercel, open project **tabs-lt1p → Settings → General** and check **Root Directory = `ournest`** (Framework: Next.js). The repo root is not the app.
+   في Vercel افتح **tabs-lt1p → Settings → General** واتأكد إن **Root Directory = `ournest`**.
+2. **Settings → Environment Variables:** add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for **Production** and **Preview**. If the project was connected through Vercel's Supabase integration these already exist.
+   ضيف المتغيرين لـ **Production** و **Preview**. لو ربطت Supabase من خلال Vercel هتلاقيهم موجودين.
+3. **Redeploy** after any variable change (**Deployments → … → Redeploy**). `NEXT_PUBLIC_` values are baked in at build time, so an old build keeps the old values.
+   اعمل **Redeploy** بعد أي تغيير في المتغيرات، لأن قيم `NEXT_PUBLIC_` بتتحط وقت الـ build.
+4. Every push to `master` deploys production. Pull requests get a Preview URL.
+   أي push على `master` بيتنشر على طول. والـ pull requests بيبقى ليها رابط Preview.
+5. In Supabase (production project) → **Authentication → URL Configuration**:
+   - Site URL: `https://tabs-lt1p.vercel.app`
+   - Redirect URLs: `https://tabs-lt1p.vercel.app/auth/confirm`, `https://tabs-lt1p.vercel.app/auth/callback`
+
+   Change these when you add a custom domain. / غيّرهم لو ضفت دومين خاص.
+6. Smoke test: open https://tabs-lt1p.vercel.app, sign up, confirm the email, add one expense. On iPhone: Safari → Share → **Add to Home Screen**.
+   جرّب: افتح الموقع، سجّل، أكّد الإيميل، وضيف مصروف. على الآيفون: Safari → مشاركة → **إضافة إلى الشاشة الرئيسية**.
+
+### Troubleshooting / حل المشاكل
+
+| Symptom / المشكلة | Fix / الحل |
+|---|---|
+| "التطبيق يحتاج إعدادًا" page | Env vars missing. Add them and redeploy. / المتغيرات ناقصة، ضيفها واعمل Redeploy. |
+| "تعذّر تحميل البيانات" after sign-in | `setup.sql` not run, or the account predates it. See step 4. / شوف خطوة 4. |
+| `type ... already exists` when running `setup.sql` | Already installed. Don't re-run it. / متركبّ قبل كده، متعيدوش. |
+| Confirmation link opens localhost or fails | Fix Site URL and Redirect URLs (step 5). / صلّح الروابط في خطوة 5. |
+| No confirmation email | Built-in Supabase email is rate-limited; set up custom SMTP. / إعداد SMTP خاص. |
+
+---
+
 ## Local development
 
 Prerequisites: Node 22+, and either the Supabase CLI with Docker, **or** a local PostgreSQL 16 install for the Docker-free stack.
