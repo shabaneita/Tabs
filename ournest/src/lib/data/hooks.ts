@@ -51,11 +51,25 @@ export async function loadMe(): Promise<Me | null> {
   } = await sb.auth.getUser();
   if (!user) return null;
 
-  const [profile, settings, membership] = await Promise.all([
-    sb.from("profiles").select("id, display_name, avatar_color").eq("id", user.id).single().then(unwrap<Profile>),
-    sb.from("user_settings").select("*").eq("user_id", user.id).single().then(unwrap<UserSettings>),
+  const fetchOwn = () =>
+    Promise.all([
+      sb.from("profiles").select("id, display_name, avatar_color").eq("id", user.id).maybeSingle().then(unwrap<Profile | null>),
+      sb.from("user_settings").select("*").eq("user_id", user.id).maybeSingle().then(unwrap<UserSettings | null>),
+    ]);
+  const [[ownProfile, ownSettings], membership] = await Promise.all([
+    fetchOwn(),
     sb.from("household_members").select("*").eq("user_id", user.id).maybeSingle().then(unwrap<HouseholdMember | null>),
   ]);
+
+  // Accounts created before the schema existed have no profile/settings rows;
+  // create them on the fly instead of failing the whole app.
+  let profile = ownProfile;
+  let settings = ownSettings;
+  if (!profile || !settings) {
+    unwrap(await sb.rpc("ensure_my_profile"));
+    [profile, settings] = await fetchOwn();
+    if (!profile || !settings) throw new Error("profile_missing");
+  }
 
   let household: Household | null = null;
   let members: Me["members"] = [];
